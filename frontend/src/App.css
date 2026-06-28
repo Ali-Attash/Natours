@@ -1,0 +1,319 @@
+:root{
+  --bg-1: #e6f0ff;
+  --bg-2: #f7fbff;
+  --primary: #2563eb; /* blue-600 */
+  --accent: #7c3aed; /* purple */
+  --muted: #6b7280;
+  --glass: rgba(255,255,255,0.55);
+  --card-shadow: 0 8px 30px rgba(37,99,235,0.08);
+  --radius: 14px;
+}
+
+/* Page background and base typography */
+html,body,#root{
+  height: 100%;
+}
+body, html {
+  margin: 0;
+  font-family: Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.06), transparent),
+              linear-gradient(180deg,var(--bg-1),var(--bg-2));
+  color: #0f172a;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.main-content{
+  /* single centered column for content; sidebar becomes floating control panel */
+  display:block;
+  padding-top: 6px;
+}
+
+/* Floating control panel in the corner for filters / sort */
+.sidebar{
+  position: fixed;
+  right: 28px;
+  top: 28px;
+  width: 320px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.66));
+  border-radius: calc(var(--radius) + 6px);
+  padding: 18px 16px;
+  box-shadow: 0 18px 50px rgba(2,6,23,0.08);
+  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  backdrop-filter: blur(10px) saturate(125%);
+  border: 1px solid rgba(255,255,255,0.5);
+  min-height: 160px;
+  z-index: 60;
+  transform: translateZ(0);
+  transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s;
+}
+.sidebar:hover{ transform: translateY(-4px); box-shadow: 0 26px 70px rgba(2,6,23,0.10); }
+
+.tours-section{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 18px 12px 60px; /* space for floating control */
+}
+
+/* Center grid and make cards a little larger and airy */
+.tours-grid{
+  display:grid; gap:22px; grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+  justify-items: center;
+}
+
+.tour-card{
+  width: 100%; max-width: 880px; /* allow cards to stretch nicely in center column */
+  border-radius:18px; padding:20px; background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(250,250,255,0.8));
+  box-shadow: 0 22px 60px rgba(2,6,23,0.06); transition: transform .24s cubic-bezier(.2,.9,.2,1), box-shadow .18s ease;
+  display:flex; flex-direction:column; gap:12px; min-height:150px;
+  border:1px solid rgba(15,23,42,0.03);
+}
+.tour-card:hover{ transform:translateY(-8px) scale(1.01); box-shadow: 0 36px 96px rgba(2,6,23,0.10); }
+
+/* subtle decorative divider used inside cards or sections */
+.divider{
+  height:1px; background: linear-gradient(90deg, rgba(15,23,42,0.02), rgba(15,23,42,0.06)); margin:8px 0; border-radius:4px;
+}
+
+/* small floating hint to indicate filters are in the corner */
+.filter-hint{
+  position: fixed; right: 360px; top: 24px; background: rgba(11,17,32,0.04);
+  color: var(--muted); padding:6px 10px; border-radius:999px; font-size:0.85rem; z-index:55;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.header-subtitle{
+  color:var(--muted);
+  font-size:0.95rem;
+}
+
+/* Layout */
+.main-content{
+  display:grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items:start;
+}
+
+.sidebar{
+  position: fixed;
+  right: 28px;
+  top:28px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.5));
+  border-radius: var(--radius);
+  padding:18px;
+  box-shadow: var(--card-shadow);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(255,255,255,0.6);
+  min-height: 220px;
+}
+
+.tours-section{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* Controls */
+.control-group{ margin-bottom:14px; }
+.control-group label{ display:block; font-weight:600; color:#0f172a; margin-bottom:8px; }
+
+/* Ensure form control text is always visible and high-contrast */
+.sidebar input, .sidebar select, .sidebar textarea{
+  color: #0b1220; /* dark text inside inputs */
+}
+
+/* Make the search styling apply even when the input has no explicit type attribute */
+.sidebar .control-group:first-of-type input{
+  width:100%;
+  padding:10px 14px 10px 44px; /* room for icon */
+  border-radius:999px;
+  border:1px solid rgba(11,17,32,0.12);
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 6px 18px rgba(11,17,32,0.04);
+  font-size:0.95rem;
+  transition: box-shadow .15s ease, transform .08s ease, border-color .12s ease;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="%230b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>');
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 16px 16px;
+}
+
+/* Minimalistic search input inside the sidebar: pill shape with an inline SVG icon */
+.sidebar .control-group:first-of-type{ position:relative; margin-bottom:22px }
+.sidebar .control-group:first-of-type input[type="text"]{
+  width:100%;
+  padding:10px 14px 10px 44px; /* room for icon */
+  border-radius:999px;
+  border:1px solid rgba(11,17,32,0.12);
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 6px 18px rgba(11,17,32,0.04);
+  font-size:0.95rem;
+  transition: box-shadow .15s ease, transform .08s ease, border-color .12s ease;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="%230b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>');
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 16px 16px;
+}
+.sidebar .control-group:first-of-type input[type="text"]::placeholder{ color: rgba(11,17,32,0.45); font-weight:500 }
+.sidebar .control-group:first-of-type input[type="text"]:focus{
+  outline: none;
+  transform: translateY(-1px);
+  border-color: rgba(37,99,235,0.9);
+  box-shadow: 0 20px 48px rgba(37,99,235,0.10);
+}
+
+/* Inputs */
+/* Inputs and selects with stronger black outlines for visibility */
+input[type="text"], input[type="number"], select, textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,0.75); /* visible black outline */
+  background: rgba(255,255,255,0.9);
+  transition: box-shadow .12s ease, transform .08s ease, border-color .12s ease;
+  font-size:0.95rem;
+}
+
+input:focus, select:focus, textarea:focus{
+  outline: 2px solid rgba(0,0,0,0.9); /* clear black focus ring */
+  outline-offset: 2px;
+  box-shadow: none;
+  transform: translateY(-1px);
+  border-color: rgba(0,0,0,0.9);
+}
+
+/* Make .btn-light clearly outlined in black so Prev/Next contrast */
+.btn-light{ background:transparent; color:#000; box-shadow:none; border:1px solid rgba(0,0,0,0.85); }
+
+.price-inputs{ display:flex; gap:10px; margin-top:6px; }
+.price-inputs input{ flex:1 }
+
+/* Checkbox grid turned into toggle chips if markup supports label wrappers */
+.checkbox-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+.checkbox-grid .chip{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 12px; border-radius:999px; cursor:pointer;
+  background:rgba(15,23,42,0.04); color:var(--muted); font-weight:600;
+  transition: all .16s ease; border:1px solid rgba(15,23,42,0.03);
+}
+.checkbox-grid .chip:hover{ transform:translateY(-3px); background:rgba(124,58,237,0.06); }
+
+/* Layout */
+.main-content{
+  /* single column content; sidebar is fixed on the left */
+  display:block;
+  gap: 24px;
+}
+.tour-card{
+  border-radius:14px; padding:18px; background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.7));
+  box-shadow: 0 18px 50px rgba(2,6,23,0.06); transition: transform .18s ease, box-shadow .18s ease;
+  display:flex; flex-direction:column; gap:10px; min-height:160px;
+  border:1px solid rgba(15,23,42,0.04);
+}
+.tour-card:hover{ transform:translateY(-6px); box-shadow: 0 28px 68px rgba(2,6,23,0.09); }
+
+.tour-card h2{ margin:0; font-size:1.1rem; color:#0b1220 }
+.tour-card p{ margin:0; color:var(--muted); font-size:0.95rem }
+
+.tour-tags{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px }
+.tag{
+  padding:6px 10px; border-radius:999px; font-size:0.78rem; font-weight:700; color:white;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
+}
+.tag.difficulty.easy{ background: linear-gradient(90deg,#34d399,#10b981); }
+.tag.difficulty.medium{ background: linear-gradient(90deg,#f59e0b,#facc15); color:#111 }
+.tag.difficulty.difficult{ background: linear-gradient(90deg,#f97316,#ef4444); }
+.tag.duration{ background: linear-gradient(90deg,#60a5fa,#3b82f6); }
+.tag.price{ background: linear-gradient(90deg,#34d399,#06b6d4); }
+
+/* Pagination and states */
+.pagination{ display:flex; justify-content:center; align-items:center; gap:12px; margin-top:14px; }
+.loading, .error{ text-align:center; font-weight:700; padding:12px; border-radius:10px }
+.loading{ color:var(--primary); background: rgba(37,99,235,0.06) }
+.error{ color:#b91c1c; background: rgba(244,63,94,0.06) }
+
+/* Responsive */
+@media (max-width: 920px){
+  .main-content{ padding-top: 0; }
+  .sidebar{ position:relative; top:auto; width:100%; right:auto; left:auto; margin-bottom:12px; }
+  .filter-hint{ display:none }
+}
+
+@media (max-width:420px){
+  header h1{ font-size:1.6rem }
+}
+
+/* small helper classes */
+.muted{ color:var(--muted) }
+
+/* Strong overrides to ensure search input and sidebar form text are visible and styled correctly
+   (placed at end to win over earlier generic rules). */
+.sidebar input, .sidebar select, .sidebar textarea{
+  color: #0b1220 !important; /* ensure text is visible */
+}
+
+.sidebar .control-group:first-of-type input,
+.sidebar .control-group:first-of-type input[type="text"],
+.sidebar .control-group:first-of-type input[type="search"]{
+  padding:10px 14px 10px 46px !important; /* space for icon */
+  border-radius:999px !important;
+  border:1px solid rgba(11,17,32,0.12) !important;
+  background-color: rgba(255,255,255,0.95) !important;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="%230b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: 12px center !important;
+  background-size: 16px 16px !important;
+  box-shadow: 0 6px 18px rgba(11,17,32,0.04) !important;
+  font-size: 0.95rem !important;
+}
+
+/* Make sure the search input never overflows the sidebar */
+.sidebar .control-group:first-of-type input{
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  background-position: 14px center !important;
+  padding-left: 44px !important;
+}
+
+/* Add right spacing to the main content so the fixed sidebar doesn't overlap the tours */
+.tours-section{
+  margin-right: 360px; /* leaves room for the 320px sidebar + spacing */
+}
+
+@media (max-width: 920px){
+  /* collapse the right margin on smaller screens where sidebar becomes inline */
+  .tours-section{ margin-right: 0; }
+}
+
+.sidebar .control-group:first-of-type input::placeholder{
+  color: rgba(11,17,32,0.45) !important;
+  font-weight:500 !important;
+}
+
+.sidebar .control-group:first-of-type input:focus{
+  outline: none !important;
+  transform: translateY(-1px) !important;
+  border-color: rgba(37,99,235,0.9) !important;
+  box-shadow: 0 20px 48px rgba(37,99,235,0.10) !important;
+}
+
+/* Header buttons: restore colorful gradients for prominence */
+.header-buttons .btn-red{ background: linear-gradient(90deg,#ef4444,#f97316) !important; color: #fff !important; }
+.header-buttons .btn-blue{ background: linear-gradient(90deg,#2563eb,#3b82f6) !important; color: #fff !important; }
+
+/* Move tours slightly to the right and add inner padding so cards don't feel stuck to the left */
+.tours-section{
+  margin-right: 420px; /* increase space for right sidebar */
+  padding-left: 20px; /* gentle inner padding */
+}
+
+@media (max-width: 920px){
+  .tours-section{ margin-right: 0; padding-left: 0; }
+}
+

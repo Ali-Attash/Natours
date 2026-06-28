@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    /* Language & Target */
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    /* Project Structure */
+    "rootDir": "./src",
+    "outDir": "./dist",
+    // "baseUrl": "./src",
+
+    /* Node.js Environment */
+    "types": ["node"],
+
+    /* Strictness (Highly Recommended) */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+
+    /* Extra Safety */
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Module Interop */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* Output Quality */
+    "sourceMap": true,
+    "declaration": false,
+    "removeComments": true,
+
+    /* Performance / Consistency */
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Useful in modern TS */
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    /* Build Behavior */
+    "incremental": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

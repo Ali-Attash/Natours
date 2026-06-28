@@ -1,0 +1,17 @@
+# --- BACKEND DEPENDENCIES & BUILDS ---
+Backend/node_modules/
+Backend/dist/
+Backend/tsconfig.tsbuildinfo
+
+# --- BACKEND ENVIRONMENT VARIABLES ---
+Backend/src/configs/development.env
+Backend/src/configs/production.env
+
+# --- FRONTEND DEPENDENCIES & BUILDS ---
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# --- SYSTEM FILES ---
+.DS_Store
+Thumbs.db
