@@ -73,8 +73,6 @@ export async function protect(req: Request, res: Response, next: NextFunction) {
 
   const decoded = (await jwt.verify(token, JWT_SECRET)) as jwt.JwtPayload;
 
-  console.log(decoded);
-
   if (!decoded) throw new AppError("Invalid token", 401);
 
   next();
