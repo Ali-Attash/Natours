@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../utils/factories/appError";
 import mongoose from "mongoose";
 
-
 async function tokenSign(id: mongoose.Types.ObjectId) {
   const JWT_SECRET = process.env.JWT_SECRET!;
   const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "15m";
