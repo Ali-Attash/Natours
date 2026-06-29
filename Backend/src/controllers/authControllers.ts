@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AppError } from "../utils/factories/appError";
 import mongoose from "mongoose";
-import { promisify } from "node:util";
+
 
 async function tokenSign(id: mongoose.Types.ObjectId) {
   const JWT_SECRET = process.env.JWT_SECRET!;
