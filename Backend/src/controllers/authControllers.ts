@@ -31,7 +31,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
     status: "success",
     token,
     message: "The new user has been added",
-    newUser: userResponse;
+    newUser: userResponse,
   });
 }
 

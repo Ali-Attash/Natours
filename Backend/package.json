@@ -23,7 +23,7 @@
     "cross-env": "^10.1.0",
     "nodemon": "^3.1.14",
     "tsx": "^4.21.0",
-    "typescript": "^5.0.0"
+    "typescript": "^7.0.1-rc"
   },
   "dependencies": {
     "@types/bcrypt": "^6.0.0",
