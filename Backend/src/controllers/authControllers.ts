@@ -41,8 +41,10 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   if (!email || !password)
     throw new AppError("Please enter email and password", 400);
 
+  // finding the user with that email and assign it to a variable (user)
   const user = await Users.findOne({ email }).select("+password");
 
+  // check whether the user with that email and password exists or no
   if (!user || !(await user.correctPassword(password, user.password))) {
     throw new AppError("Invalid email or password", 401);
   }
