@@ -25,6 +25,16 @@ function handleValidationErrorDB(err: any) {
   return new AppError(message, 400);
 }
 
+function handleJWTError(err: any) {
+  const message = "The token is invalid";
+  return new AppError(message, 401);
+}
+
+function handleJWTExpireError(err: any) {
+  const message = "The token has been expired please login again";
+  return new AppError(message, 401);
+}
+
 function sendErrDev(err: AppError, res: Response) {
   const statusCode = err.statusCode || 500;
 
@@ -73,6 +83,10 @@ export function globalErrorMiddleware(
     if (error.code === 11000) error = handleDuplicatedFieldDB(error);
 
     if (err.name === "ValidationError") error = handleValidationErrorDB(error);
+
+    if (err.name === "JsonWebTokenError") error = handleJWTError(error);
+
+    if (err.name === "TokenExpiredError") error = handleJWTExpireError(error);
 
     sendErrProd(error, res);
   }

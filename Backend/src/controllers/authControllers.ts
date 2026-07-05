@@ -77,5 +77,15 @@ export async function protect(req: Request, res: Response, next: NextFunction) {
 
   if (!decoded) throw new AppError("Invalid token", 401);
 
+  const userId = decoded.id;
+
+  const verification = await Users.findById(userId);
+
+  if (!verification)
+    throw new AppError(
+      "The user belonging to this token does no longer exist",
+      401,
+    );
+
   next();
 }
