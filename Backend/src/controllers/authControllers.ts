@@ -2,7 +2,15 @@ import Users from "../models/userModel";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AppError } from "../utils/factories/appError";
-import mongoose from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
+import { UserType, UserMethods } from "../types/toursAPiTypes";
+
+// Create a combined type helper for the controller handlers
+type UserDocument = Document<unknown, {}, UserType> &
+  UserType &
+  UserMethods & {
+    _id: Types.ObjectId;
+  };
 
 async function tokenSign(id: mongoose.Types.ObjectId) {
   const JWT_SECRET = process.env.JWT_SECRET!;
@@ -14,16 +22,21 @@ async function tokenSign(id: mongoose.Types.ObjectId) {
 }
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
-  const newUser = await Users.create({
+  // Cast the created document to our fully-typed UserDocument
+  const newUser = (await Users.create({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-  });
+    passwordChangedAt: req.body.passwordChangedAt,
+  })) as UserDocument;
 
   const token = await tokenSign(newUser._id);
 
-  const userResponse = newUser.toObject();
+  // Cast plain object explicitly to make 'password' property safely deletable
+  const userResponse = newUser.toObject() as Partial<UserType> & {
+    password?: string;
+  };
   delete userResponse.password;
 
   res.status(201).json({
@@ -41,8 +54,10 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   if (!email || !password)
     throw new AppError("Please enter email and password", 400);
 
-  // finding the user with that email and assign it to a variable (user)
-  const user = await Users.findOne({ email }).select("+password");
+  // cast the database result to UserDocument to unlock instance methods
+  const user = (await Users.findOne({ email }).select(
+    "+password",
+  )) as UserDocument | null;
 
   // check whether the user with that email and password exists or no
   if (!user || !(await user.correctPassword(password, user.password))) {
@@ -86,6 +101,13 @@ export async function protect(req: Request, res: Response, next: NextFunction) {
       "The user belonging to this token does no longer exist",
       401,
     );
+
+  if (decoded.iat && verification.passwordChangedAfter(decoded.iat)) {
+    throw new AppError(
+      "The password was changed after the token is issuded, please login again",
+      401,
+    );
+  }
 
   next();
 }

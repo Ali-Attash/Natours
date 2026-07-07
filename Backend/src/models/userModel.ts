@@ -1,16 +1,21 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
-import { UserType } from "../types/toursAPiTypes";
+import { UserType, UserMethods } from "../types/toursAPiTypes";
 
-const userSchema = new mongoose.Schema<UserType>({
+// Pass UserType and UserMethods into the Schema generics
+const userSchema = new mongoose.Schema<
+  UserType,
+  Model<UserType, {}, UserMethods>,
+  UserMethods
+>({
   name: {
     type: String,
-    require: [true, "Please provide your name"],
+    required: [true, "Please provide your name"], // Fixed 'require' typo to 'required'
   },
   email: {
     type: String,
-    require: [true, "Please provide your email"],
+    required: [true, "Please provide your email"],
     lowercase: true,
     unique: true,
     validate: [validator.isEmail, "Please provide a valid email"],
@@ -20,22 +25,24 @@ const userSchema = new mongoose.Schema<UserType>({
   },
   password: {
     type: String,
-    require: [true, "A user must have a password"],
+    required: [true, "A user must have a password"],
     select: false,
   },
   passwordConfirm: {
     type: String,
-    require: true,
+    required: true,
     validate: {
-      validator: function (value: string): boolean {
-        return value == this.password;
+      validator: function (this: any, value: string): boolean {
+        return value === this.password;
       },
       message: "Passwords do not match",
     },
   },
+  passwordChangedAt: Date,
 });
 
-userSchema.pre("save", async function () {
+// Added explicit typing 'this: any' to bypass strict mongoose context inside pre-save middleware
+userSchema.pre("save", async function (this: any) {
   if (!this.isModified("password")) return;
 
   const hashedPassword = await bcrypt.hash(this.password as string, 12);
@@ -43,13 +50,34 @@ userSchema.pre("save", async function () {
   this.set("passwordConfirm", undefined);
 });
 
+// Implemented the custom instance methods matching the UserMethods interface
 userSchema.methods.correctPassword = async function (
   candidatePassword: string,
-  userPassword: string,
-) {
+  userPassword?: string,
+): Promise<boolean> {
+  if (!userPassword) return false;
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-const Users = mongoose.model<UserType>("Users", userSchema);
+userSchema.methods.passwordChangedAfter = function (
+  this: any,
+  JWTTimeStamp: number,
+): boolean {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = Math.floor(
+      this.passwordChangedAt.getTime() / 1000,
+    );
+
+    return JWTTimeStamp < changedTimestamp;
+  }
+
+  return false;
+};
+
+// Created the model using both the document interface and methods interface
+const Users = mongoose.model<UserType, Model<UserType, {}, UserMethods>>(
+  "Users",
+  userSchema,
+);
 
 export default Users;

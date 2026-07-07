@@ -1,0 +1,53 @@
+[33mcommit 30808c7544d1ac1b3ac78bb24630b3d0f69d374d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Tue Jul 7 09:48:38 2026 +0430
+
+    authController protect features checking if the password was changed after JWT is issued
+
+[33mcommit d1b86260cbe8e4bf860ee7ca42d17b10f96fedb7[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Sun Jul 5 09:27:10 2026 +0430
+
+    authController improvement
+
+[33mcommit ea29bda6af9e249901162b19ce47028ced193359[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Thu Jul 2 09:34:51 2026 +0430
+
+    better comment in login handler
+
+[33mcommit 15b18f9e0453550427fc5ff2f6d4ba9a7fdf644b[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Thu Jul 2 09:17:06 2026 +0430
+
+    some new changes
+
+[33mcommit 1c6510a739f90c700518df69bcbb9d2c3b5d202f[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Mon Jun 29 13:26:34 2026 +0430
+
+    removed the test decoded in console.log()
+
+[33mcommit bcd06b94d6492418fb895222af3bddc9b4803820[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Mon Jun 29 09:47:31 2026 +0430
+
+    removed promisify importation
+
+[33mcommit 56e75f0ac2ccd4fec5746e9d9d3c78202c419b0f[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Mon Jun 29 09:46:22 2026 +0430
+
+    removed promisify importation
+
+[33mcommit 337c97e53dcc74b83e35dbac1e29ae8f8f05f6ea[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Mon Jun 29 09:13:57 2026 +0430
+
+    Your descriptive message here
+
+[33mcommit 65bdb622f6e05302195e7b8cef4bd680046cfca3[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Ali Attash <ali.attash1234@gmail.com>
+Date:   Sun Jun 28 10:30:32 2026 +0430
+
+    Initial commit: backend and frontend setup

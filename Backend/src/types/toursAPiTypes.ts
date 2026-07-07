@@ -1,18 +1,29 @@
 type RouteParams = {
-    id: string
+  id: string;
 };
 
 type Tour = {
-    id: number,
-    [key: string]: any
-}
-
- type UserType = {
-     name: string,
-     position: string,
-     salary: number
-    [key: string]: any;
+  id: number;
+  [key: string]: any;
 };
 
+// 1. The document fields stored in MongoDB
+type UserType = {
+  name: string;
+  email: string;
+  password?: string;
+  passwordConfirm?: string;
+  passwordChangedAt?: Date;
+  photo?: string;
+};
 
-export type { RouteParams, Tour, UserType };
+// 2. The custom methods available on the document instances
+interface UserMethods {
+  correctPassword(
+    candidatePassword: string,
+    userPassword?: string,
+  ): Promise<boolean>;
+  passwordChangedAfter(JWTTimeStamp: number): boolean;
+}
+
+export type { RouteParams, Tour, UserType, UserMethods };
