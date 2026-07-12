@@ -11,6 +11,7 @@ type Tour = {
 type UserType = {
   name: string;
   email: string;
+  role: "user" | "guide" | "lead-guide" | "admin";
   password?: string;
   passwordConfirm?: string;
   passwordChangedAt?: Date;

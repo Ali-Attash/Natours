@@ -24,6 +24,10 @@ router
   .route("/:id")
   .get(toursController.getTourByID)
   .patch(toursController.updateUserByID)
-  .delete(toursController.deleteTourByID);
+  .delete(
+    authController.protect,
+    authController.restrictTo("admin", "lead-guide"),
+    toursController.deleteTourByID,
+  );
 
 export default router;

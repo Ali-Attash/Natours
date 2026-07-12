@@ -27,6 +27,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    role: req.body.role,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
   })) as UserDocument;
@@ -73,41 +74,77 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function protect(req: Request, res: Response, next: NextFunction) {
+  // Creating the token variable for adding the value of the token comes from client
   let token: string | undefined;
+
+  // Creating the authHeader variable and adding the value inside the request header
   const authHeader = req.headers.authorization as string;
 
+  // Checking whether the authHeader variable has a vlue & it starts with "Bearer"
+  // If possitive the value inside the variable authHeader should get split by space and the second value of it
+  // and get assigned inside the variable token
   if (authHeader && authHeader.startsWith("Bearer")) {
     token = authHeader.split(" ")[1];
   }
 
+  // Checking whether the value has been assigned in to token variable.
+  // If negative the AppError is used to throw new error to be catched by global error handling middleware
   if (!token)
     throw new AppError(
       "You are not logged in! Please log in to get access",
       401,
     );
 
+  // Extracting the jwt secret & adding in to JWT_SECRET variable
   const JWT_SECRET = process.env.JWT_SECRET!;
 
+  // Creating a variable called decoded & value is assigned by the jwt.verify() which returns the payload
   const decoded = (await jwt.verify(token, JWT_SECRET)) as jwt.JwtPayload;
 
+  // Checking whether the variable decoded has value or no
+  // If there is a value (payload) so we go forward
+  // If not the AppError class is used to throw new error
   if (!decoded) throw new AppError("Invalid token", 401);
 
+  // The step to verify whether the user exist in database or no
+  // Extracting the user's Id inside the decoded variable which has the jwt payload inside it.
+  // Assign the id field which contains the user's id
   const userId = decoded.id;
 
-  const verification = await Users.findById(userId);
+  // Querying the database for finding the user based on id which got extracted!
+  // And adding the value of the query inside the cuurentUser variable
+  const currentUser = await Users.findById(userId);
 
-  if (!verification)
+  // Checking if the curentUser variable has value in it
+  // If not the AppError class is being used to throw the error
+  if (!currentUser)
     throw new AppError(
       "The user belonging to this token does no longer exist",
       401,
     );
 
-  if (decoded.iat && verification.passwordChangedAfter(decoded.iat)) {
+  // Checking if the password has been changed after the token is issued
+  if (decoded.iat && currentUser.passwordChangedAfter(decoded.iat)) {
     throw new AppError(
       "The password was changed after the token is issuded, please login again",
       401,
     );
   }
 
+  req.user = currentUser;
+  // If everything condition was met by the user, the user is granted to access the route
   next();
+}
+
+export function restrictTo(...roles: string[]) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) throw new AppError("The user does not exist", 401);
+    if (!roles.includes(req.user.role)) {
+      throw new AppError(
+        "You do not have permission to perform this action",
+        403,
+      );
+    }
+    next();
+  };
 }
