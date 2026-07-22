@@ -167,6 +167,24 @@ export async function forgotPassword(
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
+  try {
+    await email.sendEmail({
+      to: req.body.email,
+      subject: "Your password reset token valid for (10 min)",
+      text: message,
+    });
+  } catch (err) {
+    // Database Cleanup: Clear tokens if email delivery failed
+    user.set("passwordResetToken", undefined);
+    user.set("passwordResetExpires", undefined);
+    await user.save({ validateBeforeSave: false });
+
+    // Rethrow to let Express 5's global handler take over
+    throw new AppError(
+      "There was an error sending the email. Try again later.",
+      500,
+    );
+  }
   res.status(200).json({
     status: "success",
   });
