@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import mongoose, { Model } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
@@ -44,6 +45,8 @@ const userSchema = new mongoose.Schema<
     },
   },
   passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpired: String,
 });
 
 // Added explicit typing 'this: any' to bypass strict mongoose context inside pre-save middleware
@@ -77,6 +80,19 @@ userSchema.methods.passwordChangedAfter = function (
   }
 
   return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.passwordResetExpired = new Date(Date.now() + 10 * 60 * 1000);
+
+  return resetToken;
 };
 
 // Created the model using both the document interface and methods interface

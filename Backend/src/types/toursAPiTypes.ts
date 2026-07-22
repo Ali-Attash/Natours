@@ -16,6 +16,8 @@ type UserType = {
   passwordConfirm?: string;
   passwordChangedAt?: Date;
   photo?: string;
+  passwordResetToken?: string;
+  passwordResetExpired?: Date;
 };
 
 // 2. The custom methods available on the document instances
@@ -25,6 +27,8 @@ interface UserMethods {
     userPassword?: string,
   ): Promise<boolean>;
   passwordChangedAfter(JWTTimeStamp: number): boolean;
+
+  createPasswordResetToken(): void;
 }
 
 export type { RouteParams, Tour, UserType, UserMethods };

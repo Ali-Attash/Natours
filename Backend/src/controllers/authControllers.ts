@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../utils/factories/appError";
 import mongoose, { Document, Types } from "mongoose";
 import { UserType, UserMethods } from "../types/toursAPiTypes";
+import * as email from "../utils/factories/email";
 
 // Create a combined type helper for the controller handlers
 type UserDocument = Document<unknown, {}, UserType> &
@@ -148,3 +149,31 @@ export function restrictTo(...roles: string[]) {
     next();
   };
 }
+
+export async function forgotPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const user = await Users.findOne({ email: req.body.email });
+
+  if (!user) throw new AppError("The user with this email does not exist", 404);
+
+  const resetToken = user.createPasswordResetToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  const resetURL = `${req.protocol}://${req.get("host")}/api/v1/users/resetPassword/${resetToken}`;
+
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+
+  res.status(200).json({
+    status: "success",
+  });
+}
+
+export function resetPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {}
