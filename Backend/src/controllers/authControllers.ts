@@ -101,7 +101,7 @@ export async function protect(req: Request, res: Response, next: NextFunction) {
   const JWT_SECRET = process.env.JWT_SECRET!;
 
   // Creating a variable called decoded & value is assigned by the jwt.verify() which returns the payload
-  const decoded = (await jwt.verify(token, JWT_SECRET)) as jwt.JwtPayload;
+  const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload;
 
   // Checking whether the variable decoded has value or no
   // If there is a value (payload) so we go forward
@@ -134,7 +134,7 @@ export async function protect(req: Request, res: Response, next: NextFunction) {
   }
 
   req.user = currentUser;
-  // If everything condition was met by the user, the user is granted to access the route
+  // If every condition was met by the user, the user is granted to access the route
   next();
 }
 
@@ -234,13 +234,31 @@ export async function updatePassword(
 ) {
   // 0) Check whether the the field currentPassword, newPassword, and confirmNewPassword exist
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
-  if (!currentPassword || newPassword || confirmNewPassword) {
+  if (!currentPassword || !newPassword || !confirmNewPassword) {
     throw new AppError("Please fill all the fields", 401);
   }
   // 1) Verify the Identity
-  const hashedPassword = crypto
-    .createHash("sha256")
-    .update(currentPassword)
-    .digest("hex");
-  // 2) Updating the client's password
+  const userId = req.user?.id;
+  const user = await Users.findById({ _id: userId }).select("password");
+  if (!user) throw new AppError("The user no longer exist", 401);
+  // 2) Compare password
+
+  const isMatched = await user.correctPassword(
+    req.body.currentPassword,
+    user.password,
+  );
+  if (!isMatched)
+    throw new AppError(
+      "Incorrect current password, please provide a correct password",
+      401,
+    );
+  // 3) Updating the client's password
+  user.password = newPassword;
+  user.save();
+
+  const token = await tokenSign(user._id);
+  res.status(200).json({
+    status: "success",
+    token,
+  });
 }
