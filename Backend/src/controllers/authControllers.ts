@@ -239,7 +239,7 @@ export async function updatePassword(
   }
   // 1) Verify the Identity
   const userId = req.user?.id;
-  const user = await Users.findById({ _id: userId }).select("password");
+  const user = await Users.findById({ userId }).select("+password");
   if (!user) throw new AppError("The user no longer exist", 401);
   // 2) Compare password
 
@@ -254,7 +254,7 @@ export async function updatePassword(
     );
   // 3) Updating the client's password
   user.password = newPassword;
-  user.save();
+  await user.save();
 
   const token = await tokenSign(user._id);
   res.status(200).json({
