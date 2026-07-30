@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/server.js",
+  "types": "module",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
@@ -38,5 +39,9 @@
     "nodemailer": "^9.0.3",
     "slugify": "^1.6.9",
     "validator": "^13.15.35"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true,
+    "esbuild@0.28.1": true
   }
 }

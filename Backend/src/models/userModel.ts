@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema<
 >({
   name: {
     type: String,
-    required: [true, "Please provide your name"], // Fixed 'require' typo to 'required'
+    required: [true, "Please provide your name"],
   },
   email: {
     type: String,
@@ -49,7 +49,6 @@ const userSchema = new mongoose.Schema<
   passwordResetExpired: String,
 });
 
-// Added explicit typing 'this: any' to bypass strict mongoose context inside pre-save middleware
 userSchema.pre("save", async function (this: any) {
   if (!this.isModified("password")) return;
 
@@ -58,7 +57,6 @@ userSchema.pre("save", async function (this: any) {
   this.set("passwordConfirm", undefined);
 });
 
-// Implemented the custom instance methods matching the UserMethods interface
 userSchema.methods.correctPassword = async function (
   candidatePassword: string,
   userPassword?: string,
@@ -81,6 +79,12 @@ userSchema.methods.passwordChangedAfter = function (
 
   return false;
 };
+
+userSchema.pre("save", function () {
+  if (!this.isModified("password") || this.isNew) return;
+
+  this.passwordChangedAt = new Date(Date.now() - 1000);
+});
 
 userSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString("hex");

@@ -5,6 +5,7 @@ import { AppError } from "../utils/factories/appError";
 import mongoose, { Document, Types } from "mongoose";
 import { UserType, UserMethods } from "../types/toursAPiTypes";
 import * as email from "../utils/factories/email";
+import crypto from "crypto";
 
 // Create a combined type helper for the controller handlers
 type UserDocument = Document<unknown, {}, UserType> &
@@ -179,7 +180,6 @@ export async function forgotPassword(
     user.set("passwordResetExpires", undefined);
     await user.save({ validateBeforeSave: false });
 
-    // Rethrow to let Express 5's global handler take over
     throw new AppError(
       "There was an error sending the email. Try again later.",
       500,
@@ -190,8 +190,39 @@ export async function forgotPassword(
   });
 }
 
-export function resetPassword(
+export async function resetPassword(
   req: Request,
   res: Response,
   next: NextFunction,
-) {}
+) {
+  // 1) Get user based on the token
+  const resetToken = String(req.params.token);
+
+  const hashedPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  const user = await Users.findOne({
+    passwordResetToken: hashedPasswordToken,
+    passwordResetExpired: { $gt: Date.now() },
+  });
+  if (!user) throw new AppError("the token is invlid or has been expired", 400);
+
+  // 2) If token has not expired, and there is user, set the new password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordResetToken = undefined!;
+  user.passwordResetExpired = undefined!;
+
+  // 3) Update changedPasswordAt property for the user
+
+  user.save();
+  // 4) Log the user in send the JWT
+  const token = await tokenSign(user._id);
+
+  res.status(200).json({
+    status: "sucess",
+    token,
+  });
+}
