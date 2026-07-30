@@ -226,3 +226,21 @@ export async function resetPassword(
     token,
   });
 }
+
+export async function updatePassword(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  // 0) Check whether the the field currentPassword, newPassword, and confirmNewPassword exist
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+  if (!currentPassword || newPassword || confirmNewPassword) {
+    throw new AppError("Please fill all the fields", 401);
+  }
+  // 1) Verify the Identity
+  const hashedPassword = crypto
+    .createHash("sha256")
+    .update(currentPassword)
+    .digest("hex");
+  // 2) Updating the client's password
+}
