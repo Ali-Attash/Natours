@@ -1,3 +1,5 @@
+import mongoose, { Document, Types } from "mongoose";
+
 type RouteParams = {
   id: string;
 };
@@ -6,6 +8,13 @@ type Tour = {
   id: number;
   [key: string]: any;
 };
+
+// The raw mongoose document for document users
+export type UserDocument = Document<unknown, {}, UserType> &
+  UserType &
+  UserMethods & {
+    _id: Types.ObjectId;
+  };
 
 // 1. The document fields stored in MongoDB
 type UserType = {
@@ -18,6 +27,7 @@ type UserType = {
   photo?: string;
   passwordResetToken?: string;
   passwordResetExpired?: Date;
+  active?: boolean;
 };
 
 // 2. The custom methods available on the document instances

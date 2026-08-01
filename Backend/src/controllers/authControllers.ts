@@ -6,13 +6,9 @@ import mongoose, { Document, Types } from "mongoose";
 import { UserType, UserMethods } from "../types/toursAPiTypes";
 import * as email from "../utils/factories/email";
 import crypto from "crypto";
+import { UserDocument } from "../types/toursAPiTypes";
 
 // Create a combined type helper for the controller handlers
-type UserDocument = Document<unknown, {}, UserType> &
-  UserType &
-  UserMethods & {
-    _id: Types.ObjectId;
-  };
 
 function tokenSign(id: mongoose.Types.ObjectId) {
   const JWT_SECRET = process.env.JWT_SECRET!;
@@ -196,6 +192,7 @@ export async function forgotPassword(
   }
   res.status(200).json({
     status: "success",
+    message: "the reset token has been sent to your email",
   });
 }
 

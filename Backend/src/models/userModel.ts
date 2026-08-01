@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema<
       message: "Passwords do not match",
     },
   },
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpired: String,
@@ -98,6 +103,10 @@ userSchema.methods.createPasswordResetToken = function () {
 
   return resetToken;
 };
+
+userSchema.pre(/^find/, function (this: any) {
+  this.find({ active: { $ne: false } });
+});
 
 // Created the model using both the document interface and methods interface
 const Users = mongoose.model<UserType, Model<UserType, {}, UserMethods>>(
