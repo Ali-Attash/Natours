@@ -14,12 +14,24 @@ type UserDocument = Document<unknown, {}, UserType> &
     _id: Types.ObjectId;
   };
 
-async function tokenSign(id: mongoose.Types.ObjectId) {
+function tokenSign(id: mongoose.Types.ObjectId) {
   const JWT_SECRET = process.env.JWT_SECRET!;
   const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "15m";
 
   return jwt.sign({ id: id._id.toString() }, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN as any,
+  });
+}
+
+function createSendToken(
+  user: UserDocument,
+  statusCode: number,
+  res: Response,
+) {
+  const token = tokenSign(user._id);
+  res.status(statusCode).json({
+    status: "success",
+    token,
   });
 }
 
@@ -69,10 +81,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
   const token = await tokenSign(user._id);
 
-  res.status(200).json({
-    status: "success",
-    token,
-  });
+  createSendToken(user, 200, res);
 }
 
 export async function protect(req: Request, res: Response, next: NextFunction) {
@@ -219,12 +228,7 @@ export async function resetPassword(
 
   user.save();
   // 4) Log the user in send the JWT
-  const token = await tokenSign(user._id);
-
-  res.status(200).json({
-    status: "sucess",
-    token,
-  });
+  createSendToken(user, 200, res);
 }
 
 export async function updatePassword(
@@ -237,28 +241,25 @@ export async function updatePassword(
   if (!currentPassword || !newPassword || !confirmNewPassword) {
     throw new AppError("Please fill all the fields", 401);
   }
+
+  if (newPassword !== confirmNewPassword) {
+    throw new AppError("New passwords do not match", 400);
+  }
   // 1) Verify the Identity
   const userId = req.user?.id;
-  const user = await Users.findById({ userId }).select("+password");
+  const user = await Users.findById(userId).select("+password");
   if (!user) throw new AppError("The user no longer exist", 401);
   // 2) Compare password
 
-  const isMatched = await user.correctPassword(
-    req.body.currentPassword,
-    user.password,
-  );
+  const isMatched = await user.correctPassword(currentPassword, user.password);
   if (!isMatched)
     throw new AppError(
       "Incorrect current password, please provide a correct password",
-      401,
+      400,
     );
   // 3) Updating the client's password
   user.password = newPassword;
-  await user.save();
+  await user.save({ validateBeforeSave: false });
 
-  const token = await tokenSign(user._id);
-  res.status(200).json({
-    status: "success",
-    token,
-  });
+  createSendToken(user, 200, res);
 }
