@@ -21,7 +21,7 @@ type UserType = {
   name: string;
   email: string;
   role: "user" | "guide" | "lead-guide" | "admin";
-  password?: string;
+  password?: string | undefined;
   passwordConfirm?: string;
   passwordChangedAt?: Date;
   photo?: string;

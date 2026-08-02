@@ -25,9 +25,22 @@ function createSendToken(
   res: Response,
 ) {
   const token = tokenSign(user._id);
+  const JWT_COOKIES_EXPIRES_IN = Number(process.env.JWT_COOKIES_EXPIRES_IN);
+  let cookieOptions = {
+    expires: new Date(Date.now() + JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60),
+    secure: false,
+    httpOnly: true,
+  };
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+
+  res.cookie("jwt", token, cookieOptions);
+
+  user.password = undefined;
+
   res.status(statusCode).json({
     status: "success",
     token,
+    user,
   });
 }
 
@@ -42,20 +55,13 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
     passwordChangedAt: req.body.passwordChangedAt,
   })) as UserDocument;
 
-  const token = await tokenSign(newUser._id);
-
   // Cast plain object explicitly to make 'password' property safely deletable
   const userResponse = newUser.toObject() as Partial<UserType> & {
     password?: string;
   };
   delete userResponse.password;
 
-  res.status(201).json({
-    status: "success",
-    token,
-    message: "The new user has been added",
-    newUser: userResponse,
-  });
+  createSendToken(newUser, 201, res);
 }
 
 export async function login(req: Request, res: Response, next: NextFunction) {
