@@ -27,7 +27,7 @@ function createSendToken(
   const token = tokenSign(user._id);
   const JWT_COOKIES_EXPIRES_IN = Number(process.env.JWT_COOKIES_EXPIRES_IN);
   let cookieOptions = {
-    expires: new Date(Date.now() + JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60),
+    expires: new Date(Date.now() + JWT_COOKIES_EXPIRES_IN * 60 * 1000),
     secure: false,
     httpOnly: true,
   };
@@ -80,8 +80,6 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   if (!user || !(await user.correctPassword(password, user.password))) {
     throw new AppError("Invalid email or password", 401);
   }
-
-  const token = await tokenSign(user._id);
 
   createSendToken(user, 200, res);
 }
