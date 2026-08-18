@@ -2,7 +2,6 @@ import express from "express";
 const router = express.Router();
 import * as toursController from "../controllers/toursControllers";
 import * as middlewares from "../middlewares/customMiddlewares";
-import { myLogger } from "../middlewares/customMiddlewares";
 import * as authController from "./../controllers/authControllers";
 
 router

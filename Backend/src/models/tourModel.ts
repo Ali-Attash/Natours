@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
 import validator from "validator";
+import User from "./userModel";
 
 const tourSchema = new mongoose.Schema(
   {
@@ -25,8 +26,8 @@ const tourSchema = new mongoose.Schema(
       type: String,
       required: [true, "A tour must have a difficulty"],
       enum: {
-        values: ["easy", "medium", "hard"],
-        message: "The difficulty of tours is either easy, medium or hard",
+        values: ["easy", "medium", "difficult"],
+        message: "The difficulty of tours is either easy, medium or difficult",
       },
     },
     ratingsAverage: {
@@ -74,7 +75,32 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: "Point",
+          enum: ["Point"],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: [],
   },
+
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
@@ -91,6 +117,13 @@ tourSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {
 
 tourSchema.pre("aggregate", function () {
   this.pipeline().unshift({ $match: { VIPTour: { $ne: true } } });
+});
+
+tourSchema.pre("save", async function () {
+  const guidesPromises = this.guides.map(async (id) => {
+    return await User.findById(id);
+  });
+  this.guides = await Promise.all(guidesPromises);
 });
 
 const Tours = mongoose.model("Tours", tourSchema);
