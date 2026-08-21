@@ -41,4 +41,13 @@ interface UserMethods {
   createPasswordResetToken(): void;
 }
 
-export type { RouteParams, Tour, UserType, UserMethods };
+// Review Document stored in MongoDB
+type ReviewType = {
+  review: string;
+  ratings: number;
+  createdAt: Date;
+  user: mongoose.Types.ObjectId;
+  tour: mongoose.Types.ObjectId;
+};
+
+export type { RouteParams, Tour, UserType, UserMethods, ReviewType };

@@ -10,7 +10,7 @@ export async function getAllTours(req: Request, res: Response): Promise<void> {
     .field()
     .paginate();
 
-  const allTours = await features.mongooseQuery;
+  const allTours = await features.mongooseQuery.populate("reviews");
 
   res.status(200).json({
     status: "success",
@@ -22,7 +22,7 @@ export async function getAllTours(req: Request, res: Response): Promise<void> {
 }
 
 export async function getTourByID(req: Request, res: Response): Promise<void> {
-  const theTour = await Tours.findById(req.params.id);
+  const theTour = await Tours.findById(req.params.id).populate("reviews");
 
   if (!theTour) {
     throw new AppError("Could not find the tour with this ID", 404);

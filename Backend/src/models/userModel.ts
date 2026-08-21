@@ -110,7 +110,7 @@ userSchema.pre(/^find/, function (this: any) {
 
 // Created the model using both the document interface and methods interface
 const Users = mongoose.model<UserType, Model<UserType, {}, UserMethods>>(
-  "Users",
+  "User",
   userSchema,
 );
 

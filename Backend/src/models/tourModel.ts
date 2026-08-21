@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
 import validator from "validator";
-import User from "./userModel";
 
 const tourSchema = new mongoose.Schema(
   {
@@ -98,7 +97,12 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    guides: [],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
   },
 
   {
@@ -107,6 +111,14 @@ const tourSchema = new mongoose.Schema(
   },
 );
 
+//Virtual Populates
+tourSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "tour",
+  localField: "_id",
+});
+
+// Query Middlewares
 tourSchema.pre("save", function () {
   this.slug = slugify(this.name, { lower: true });
 });
@@ -115,17 +127,18 @@ tourSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {
   this.find({ VIPTour: { $ne: true } });
 });
 
+tourSchema.pre(/^find/, function (this: mongoose.Query<any, any>) {
+  this.populate({
+    path: "guides",
+    select: "-__v -passwordChangedAt -password",
+  });
+});
+
+// Aggregation Middleawares
 tourSchema.pre("aggregate", function () {
   this.pipeline().unshift({ $match: { VIPTour: { $ne: true } } });
 });
 
-tourSchema.pre("save", async function () {
-  const guidesPromises = this.guides.map(async (id) => {
-    return await User.findById(id);
-  });
-  this.guides = await Promise.all(guidesPromises);
-});
-
-const Tours = mongoose.model("Tours", tourSchema);
+const Tours = mongoose.model("Tour", tourSchema);
 
 export default Tours;

@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import toursRoute from "./routes/toursRoutes";
 import usersRoute from "./routes/usersRoutes";
+import reviewsRoute from "./routes/reviewsRoutes";
 import { errRouteHandle } from "./middlewares/errorHandlingMiddleware";
 import { globalErrorMiddleware } from "./middlewares/globalErrorHandlingMiddleware";
 import rateLimit from "express-rate-limit";
@@ -52,6 +53,7 @@ app.use(
 // Main Routes
 app.use("/api/v1/tours", toursRoute);
 app.use("/api/v1/users", usersRoute);
+app.use("/api/v1/reviews", reviewsRoute);
 // 404 Not Found Middleware
 app.all("/{*splat}", errRouteHandle);
 // Global Error Handler Middleware
