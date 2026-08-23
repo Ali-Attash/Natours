@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Tours from "../models/tourModel";
 import APIFeatures from "../utils/factories/APIFeatures";
 import { AppError } from "../utils/factories/appError";
+import Review from "../models/reviewModel";
 
 export async function getAllTours(req: Request, res: Response): Promise<void> {
   const features = new APIFeatures(Tours.find(), req.query)

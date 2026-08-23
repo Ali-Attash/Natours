@@ -4,6 +4,10 @@ type RouteParams = {
   id: string;
 };
 
+type tourParams = {
+  tourId: string;
+};
+
 type Tour = {
   id: number;
   [key: string]: any;
@@ -50,4 +54,11 @@ type ReviewType = {
   tour: mongoose.Types.ObjectId;
 };
 
-export type { RouteParams, Tour, UserType, UserMethods, ReviewType };
+export type {
+  RouteParams,
+  Tour,
+  UserType,
+  UserMethods,
+  ReviewType,
+  tourParams,
+};

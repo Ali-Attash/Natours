@@ -3,6 +3,7 @@ const router = express.Router();
 import * as toursController from "../controllers/toursControllers";
 import * as middlewares from "../middlewares/customMiddlewares";
 import * as authController from "./../controllers/authControllers";
+import reviewsRoute from "./reviewsRoutes";
 
 router
   .route("/top-5-cheap")
@@ -18,6 +19,9 @@ router
   .route("/")
   .get(authController.protect, toursController.getAllTours)
   .post(toursController.postTour);
+
+// Mounting the review router inside the tour router
+router.use("/:tourId/review", reviewsRoute);
 
 router
   .route("/:id")
