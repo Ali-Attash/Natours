@@ -3,6 +3,7 @@ import Tours from "../models/tourModel";
 import APIFeatures from "../utils/factories/APIFeatures";
 import { AppError } from "../utils/factories/appError";
 import Review from "../models/reviewModel";
+import * as factory from "./factoryController";
 
 export async function getAllTours(req: Request, res: Response): Promise<void> {
   const features = new APIFeatures(Tours.find(), req.query)
@@ -35,51 +36,11 @@ export async function getTourByID(req: Request, res: Response): Promise<void> {
   });
 }
 
-export async function postTour(req: Request, res: Response): Promise<void> {
-  const postedTour = await Tours.create(req.body);
+export const postTour = factory.createOne(Tours);
 
-  res.status(201).json({
-    status: "success",
-    message: "The new tour has been added",
-    newTour: postedTour,
-  });
-}
+export const updateTourByID = factory.updateOne(Tours);
 
-export async function updateUserByID(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  const updatedTour = await Tours.findByIdAndUpdate(req.params.id, req.body, {
-    returnDocument: "after",
-    runValidators: true,
-  });
-
-  if (!updatedTour) {
-    throw new AppError("Could not find the tour with this ID", 404);
-  }
-
-  res.status(200).json({
-    status: "success",
-    message: "The tour has been updated",
-    updatedTour,
-  });
-}
-
-export async function deleteTourByID(
-  req: Request,
-  res: Response,
-): Promise<void> {
-  const deletedTour = await Tours.findByIdAndDelete(req.params.id);
-
-  if (!deletedTour) {
-    throw new AppError("Could not find the tour with this ID", 404);
-  }
-
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
-}
+export const deleteTourByID = factory.deleteOne(Tours);
 
 export async function getToursStats(
   req: Request,

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Users from "../models/userModel";
 import APIFeatures from "../utils/factories/APIFeatures";
 import { AppError } from "../utils/factories/appError";
+import * as factory from "../controllers/factoryController";
 
 const updateFilterer = (
   obj: Record<string, any>,
@@ -74,3 +75,6 @@ export async function deleteMe(
     data: null,
   });
 }
+
+export const deleteUser = factory.deleteOne(Users);
+export const updateUser = factory.updateOne(Users);

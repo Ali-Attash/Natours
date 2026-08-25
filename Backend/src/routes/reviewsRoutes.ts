@@ -2,15 +2,17 @@ import express from "express";
 const router = express.Router({ mergeParams: true });
 import * as reviewController from "../controllers/reviewControllers";
 import * as authController from "../controllers/authControllers";
-import Review from "../models/reviewModel";
-import { deleteOne, updateOne, get } from "../controllers/factoryController";
 
 router
   .route("/")
-  .get(authController.protect, authController.restrictTo("admin"), get(Review))
+  .get(
+    authController.protect,
+    authController.restrictTo("admin"),
+    reviewController.getAllReviews,
+  )
   .post(
     authController.protect,
-    authController.restrictTo("user"),
+    authController.restrictTo("user", "admin"),
     reviewController.postNewReview,
   );
 
@@ -18,13 +20,13 @@ router
   .route("/:id")
   .delete(
     authController.protect,
-    authController.restrictTo("user"),
-    deleteOne(Review),
+    authController.restrictTo("user", "admin"),
+    reviewController.deleteReview,
   )
   .patch(
     authController.protect,
-    authController.restrictTo("user"),
-    updateOne(Review),
+    authController.restrictTo("user", "admin"),
+    reviewController.updateReview,
   );
 
 export default router;

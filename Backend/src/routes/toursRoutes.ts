@@ -18,15 +18,26 @@ router.route("/tours-revenue").get(toursController.getTourRevenue);
 router
   .route("/")
   .get(authController.protect, toursController.getAllTours)
-  .post(toursController.postTour);
+  .post(authController.restrictTo("admin"), toursController.postTour);
 
 // Mounting the review router inside the tour router
 router.use("/:tourId/review", reviewsRoute);
 
+// These routes and operation are dedicated for admins only
+// But some routes are shared between client side & admin side
+// Like: Getting a specific tour => Client & Admin
 router
   .route("/:id")
-  .get(toursController.getTourByID)
-  .patch(toursController.updateUserByID)
+  .get(
+    authController.protect,
+    authController.restrictTo("user", "admin"),
+    toursController.getTourByID,
+  )
+  .patch(
+    authController.protect,
+    authController.restrictTo("admin"),
+    toursController.updateTourByID,
+  )
   .delete(
     authController.protect,
     authController.restrictTo("admin", "lead-guide"),
