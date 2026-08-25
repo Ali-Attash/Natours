@@ -3,10 +3,10 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AppError } from "../utils/factories/appError";
 import mongoose, { Document, Types } from "mongoose";
-import { UserType, UserMethods } from "../types/toursAPiTypes";
+import { UserType, UserMethods } from "../types/Types";
 import * as email from "../utils/factories/email";
 import crypto from "crypto";
-import { UserDocument } from "../types/toursAPiTypes";
+import { UserDocument } from "../types/Types";
 
 // Create a combined type helper for the controller handlers
 

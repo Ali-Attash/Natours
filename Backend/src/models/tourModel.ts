@@ -1,8 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 import slugify from "slugify";
 import validator from "validator";
+import { ITourDocument } from "../types/Types";
 
-const tourSchema = new mongoose.Schema(
+const tourSchema = new Schema<ITourDocument>(
   {
     name: {
       type: String,
@@ -139,6 +140,9 @@ tourSchema.pre("aggregate", function () {
   this.pipeline().unshift({ $match: { VIPTour: { $ne: true } } });
 });
 
-const Tours = mongoose.model("Tour", tourSchema);
+const Tours: Model<ITourDocument> = mongoose.model<ITourDocument>(
+  "Tour",
+  tourSchema,
+);
 
 export default Tours;

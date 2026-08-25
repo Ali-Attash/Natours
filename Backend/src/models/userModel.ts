@@ -2,7 +2,7 @@ import crypto from "crypto";
 import mongoose, { Model } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
-import { UserType, UserMethods } from "../types/toursAPiTypes";
+import { UserType, UserMethods } from "../types/Types";
 
 // Pass UserType and UserMethods into the Schema generics
 const userSchema = new mongoose.Schema<

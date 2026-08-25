@@ -8,10 +8,45 @@ type tourParams = {
   tourId: string;
 };
 
-type Tour = {
-  id: number;
-  [key: string]: any;
-};
+// 1. Interfaces for Embedded GeoJSON Objects
+export interface IGeoLocation {
+  type: "Point";
+  coordinates: number[]; // [longitude, latitude]
+  address?: string;
+  description?: string;
+}
+
+export interface IRouteLocation extends IGeoLocation {
+  day?: number;
+}
+
+export interface ITourDocument extends ITour, Document {
+  // defining virtual properties later using .virtual(), later if needed
+  // durationWeeks: number;
+}
+
+// 2. Base Document Interface representing the core properties
+export interface ITour {
+  name: string;
+  slug?: string;
+  duration: number;
+  maxGroupSize: number;
+  difficulty: "easy" | "medium" | "difficult";
+  ratingsAverage?: number;
+  ratingsQuantity?: number;
+  price: number;
+  priceDiscount?: number;
+  summary: string;
+  description?: string;
+  imageCover: string;
+  images?: string[];
+  createdAt?: Date;
+  startDates?: Date[];
+  VIPTour?: boolean;
+  startLocation?: IGeoLocation;
+  locations?: IRouteLocation[];
+  guides?: mongoose.Types.ObjectId[]; // Array of references to the User model
+}
 
 // The raw mongoose document for document users
 export type UserDocument = Document<unknown, {}, UserType> &
@@ -54,11 +89,4 @@ type ReviewType = {
   tour: mongoose.Types.ObjectId;
 };
 
-export type {
-  RouteParams,
-  Tour,
-  UserType,
-  UserMethods,
-  ReviewType,
-  tourParams,
-};
+export type { RouteParams, UserType, UserMethods, ReviewType, tourParams };

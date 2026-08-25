@@ -1,5 +1,5 @@
 import { HydratedDocument } from "mongoose";
-import { UserType, UserMethods } from "./toursApiTypes";
+import { UserType, UserMethods } from "./Types";
 
 type UserDocument = HydratedDocument<UserType, UserMethods>;
 

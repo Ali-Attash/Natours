@@ -1,5 +1,5 @@
 import mongoose, { Model } from "mongoose";
-import { ReviewType } from "../types/toursAPiTypes";
+import { ReviewType } from "../types/Types";
 
 //review , ratings, createdAt, ref-user, ref-tour
 const reviewSchema = new mongoose.Schema(
