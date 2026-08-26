@@ -9,7 +9,12 @@ router
   .route("/top-5-cheap")
   .get(middlewares.aliasTopFiveCheap, toursController.getAllTours);
 
-router.route("/monthly-plan/:year").get(toursController.toursMontlyPlan);
+router
+  .route("/monthly-plan/:year")
+  .get(
+    authController.restrictTo("admin", "lead-guide"),
+    toursController.toursMontlyPlan,
+  );
 
 router.route("/tours-stats").get(toursController.getToursStats);
 
@@ -28,14 +33,10 @@ router.use("/:tourId/review", reviewsRoute);
 // Like: Getting a specific tour => Client & Admin
 router
   .route("/:id")
-  .get(
-    authController.protect,
-    authController.restrictTo("user", "admin"),
-    toursController.getTourByID,
-  )
+  .get(authController.protect, toursController.getTourByID)
   .patch(
     authController.protect,
-    authController.restrictTo("admin"),
+    authController.restrictTo("admin", "lead-guide"),
     toursController.updateTourByID,
   )
   .delete(

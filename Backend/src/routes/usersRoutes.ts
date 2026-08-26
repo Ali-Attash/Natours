@@ -13,21 +13,24 @@ router.patch(
   authController.updatePassword,
 );
 
-router.patch("/updateMe", authController.protect, usersController.updateMe);
-router.delete("/deleteMe", authController.protect, usersController.deleteMe);
-
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
 
+// Protect Middleware for the rest of the routes
+router.use(authController.protect);
+
+router.patch("/updateMe", usersController.updateMe);
+router.delete("/deleteMe", usersController.deleteMe);
+
+router.get("/me", authController.restrictTo("user"), usersController.getMe);
+
 // These routes are dedicated for admins only
+router.use(authController.restrictTo("admin", "lead-guide"));
+
 router.route("/").get(usersController.getAllUsers);
 router
   .route("/:id")
-  .delete(
-    authController.protect,
-    authController.restrictTo("admin"),
-    usersController.deleteUser,
-  )
+  .delete(usersController.deleteUser)
   .patch(usersController.updateUser);
 
 export default router;

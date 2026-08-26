@@ -3,28 +3,20 @@ const router = express.Router({ mergeParams: true });
 import * as reviewController from "../controllers/reviewControllers";
 import * as authController from "../controllers/authControllers";
 
+router.use(authController.protect);
+
 router
   .route("/")
-  .get(
-    authController.protect,
-    authController.restrictTo("admin"),
-    reviewController.getAllReviews,
-  )
-  .post(
-    authController.protect,
-    authController.restrictTo("user", "admin"),
-    reviewController.postNewReview,
-  );
+  .get(reviewController.getAllReviews)
+  .post(authController.restrictTo("user"), reviewController.postNewReview);
 
 router
   .route("/:id")
   .delete(
-    authController.protect,
     authController.restrictTo("user", "admin"),
     reviewController.deleteReview,
   )
   .patch(
-    authController.protect,
     authController.restrictTo("user", "admin"),
     reviewController.updateReview,
   );

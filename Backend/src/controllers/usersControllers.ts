@@ -76,5 +76,18 @@ export async function deleteMe(
   });
 }
 
+export async function getMe(req: Request, res: Response, next: NextFunction) {
+  if (!req.user)
+    throw new AppError(
+      "You are not logged in, please log in to see your information",
+      401,
+    );
+
+  res.status(200).json({
+    status: "success",
+    user: req.user,
+  });
+}
+
 export const deleteUser = factory.deleteOne(Users);
 export const updateUser = factory.updateOne(Users);
