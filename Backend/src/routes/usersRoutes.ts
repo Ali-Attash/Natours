@@ -22,7 +22,7 @@ router.use(authController.protect);
 router.patch("/updateMe", usersController.updateMe);
 router.delete("/deleteMe", usersController.deleteMe);
 
-router.get("/me", authController.restrictTo("user"), usersController.getMe);
+router.get("/me", usersController.getMe);
 
 // These routes are dedicated for admins only
 router.use(authController.restrictTo("admin", "lead-guide"));

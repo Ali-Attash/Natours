@@ -8,14 +8,14 @@ const reviewSchema = new mongoose.Schema(
       type: String,
       required: [true, "Review can not be submitted empty"],
     },
-    ratings: {
+    rating: {
       type: Number,
       min: [1, "The review ratings can not be below 1"],
       max: [5, "The review ratings can not be above 5"],
     },
     createdAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
     user: {
       type: mongoose.Schema.ObjectId,

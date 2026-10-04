@@ -23,7 +23,11 @@ router.route("/tours-revenue").get(toursController.getTourRevenue);
 router
   .route("/")
   .get(authController.protect, toursController.getAllTours)
-  .post(authController.restrictTo("admin"), toursController.postTour);
+  .post(
+    authController.protect,
+    authController.restrictTo("admin"),
+    toursController.postTour,
+  );
 
 // Mounting the review router inside the tour router
 router.use("/:tourId/review", reviewsRoute);
