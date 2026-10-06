@@ -11,6 +11,8 @@ import { xss } from "express-xss-sanitizer";
 import hpp from "hpp";
 const app: Application = express();
 
+app.set("query parser", "extended");
+
 const rateLimiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,

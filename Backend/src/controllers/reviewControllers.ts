@@ -6,7 +6,7 @@ import * as factroy from "../controllers/factoryController";
 
 export async function getAllReviews(req: Request, res: Response) {
   let filter = {};
-  if (req.params.id) filter = { tour: req.params.id };
+  if (req.params.tourId) filter = { tour: req.params.tourId };
   const allReviews = await Review.find(filter);
 
   res.status(200).json({
