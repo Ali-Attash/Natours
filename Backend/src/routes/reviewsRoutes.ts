@@ -8,8 +8,11 @@ router.use(authController.protect);
 router.route("/").get(reviewController.getAllReviews);
 
 router
+  .route("/tour/:tourId")
+  .post(authController.restrictTo("user"), reviewController.postNewReview);
+
+router
   .route("/:id")
-  .post(authController.restrictTo("user"), reviewController.postNewReview)
   .delete(
     authController.restrictTo("user", "admin"),
     reviewController.deleteReview,
