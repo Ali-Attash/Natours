@@ -12,6 +12,7 @@ export async function getAllTours(req: Request, res: Response): Promise<void> {
     .field()
     .paginate();
 
+  // const allTours = await features.mongooseQuery.populate("reviews").explain();
   const allTours = await features.mongooseQuery.populate("reviews");
 
   res.status(200).json({

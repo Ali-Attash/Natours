@@ -5,13 +5,11 @@ import * as authController from "../controllers/authControllers";
 
 router.use(authController.protect);
 
-router
-  .route("/")
-  .get(reviewController.getAllReviews)
-  .post(authController.restrictTo("user"), reviewController.postNewReview);
+router.route("/").get(reviewController.getAllReviews);
 
 router
   .route("/:id")
+  .post(authController.restrictTo("user"), reviewController.postNewReview)
   .delete(
     authController.restrictTo("user", "admin"),
     reviewController.deleteReview,

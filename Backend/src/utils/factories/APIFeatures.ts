@@ -22,7 +22,6 @@ class APIFeatures<T> {
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     this.mongooseQuery = this.mongooseQuery.find(JSON.parse(queryStr));
-    console.log("QUERY:", queryObj);
 
     return this;
   }

@@ -112,6 +112,8 @@ const tourSchema = new Schema<ITourDocument>(
   },
 );
 
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+
 //Virtual Populates
 tourSchema.virtual("reviews", {
   ref: "Review",

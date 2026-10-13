@@ -26,7 +26,7 @@ export async function postNewReview(req: Request<tourParams>, res: Response) {
     review: req.body.review,
     ratings: req.body.ratings,
     user: req.user._id,
-    tour: req.params.tourId,
+    tour: req.params.id,
   };
 
   const postedReview = await Review.create(review);
