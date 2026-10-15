@@ -5,7 +5,7 @@ type RouteParams = {
 };
 
 type tourParams = {
-  id: string;
+  tourId: string;
 };
 
 // 1. Interfaces for Embedded GeoJSON Objects

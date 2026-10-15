@@ -19,14 +19,14 @@ export async function getAllReviews(req: Request, res: Response) {
 export async function postNewReview(req: Request<tourParams>, res: Response) {
   if (!req.user)
     throw new AppError("The user must be logged in to post a review", 401);
-  if (!req.body.review || !req.body.ratings)
+  if (!req.body.review || !req.body.rating)
     throw new AppError("A review can not be submitted empty", 401);
 
   const review = {
     review: req.body.review,
-    ratings: req.body.ratings,
+    rating: req.body.rating,
     user: req.user._id,
-    tour: req.params.id,
+    tour: req.params.tourId,
   };
 
   const postedReview = await Review.create(review);

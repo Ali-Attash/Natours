@@ -111,7 +111,7 @@ const tourSchema = new Schema<ITourDocument>(
     toObject: { virtuals: true },
   },
 );
-
+tourSchema.index({ startLocation: "2dsphere" });
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 
 //Virtual Populates
